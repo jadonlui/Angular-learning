@@ -1,0 +1,132 @@
+<section class="todoapp">
+  <!-- 繫結bonding -->
+  <header class="header">
+    <!-- 文字差值放在兩個地方，1標籤中間，2""當字串 -->
+    <h1 appHighlight>{{ title }}{{ 1 + 1 }}</h1>
+
+    <!-- <input class="new-todo" #todoinput (keyup)="addEnter($event,todoinput)" placeholder="{{ placeholder }}1" autofocus /> -->
+    <input
+      class="new-todo"
+      #todoInput
+      (keyup.enter)="add(todoInput.value); todoInput.value = ''"
+      placeholder="{{ placeholder }}1"
+      autofocus
+    />
+
+    <!-- property (屬性)繫結，標籤既有屬性，不是每個屬性都有-->
+    <!-- 比起插值，更常用 property繫結-->
+    <!-- <input class="new-todo" [placeholder]="placeHolderWord" autofocus /> ，placeholder==[attr.placeholder]，因為有先定義了 -->
+    <!-- <input
+      class="new-todo"
+      [attr.placeholder]="placeHolderWord + 2"
+      autofocus
+    /> -->
+
+    <!-- attribute (屬性) 繫結，隨便怎麼寫，在html上附帶的data-->
+    <!-- <input
+      class="new-todo"
+      [attr.abc]="placeHolderWord"
+      [placeholder]="placeHolderWord + 3"
+      autofocus
+    /> -->
+
+    <!-- <button type="button" [disabled]="isUnchanged">Dis button</button> -->
+    <section class="main" style="display: block">
+      <input
+        id="toggle-all"
+        class="toggle-all"
+        type="checkbox"
+        [checked]="toggleAllBtn"
+        (click)="toggleAll()"
+      />
+      <!-- (click)綁定事件 -->
+
+      <label for="toggle-all">Mark all as complete</label>
+      <ul class="todo-list">
+        <li
+          *ngFor="let item of NowTodoList; let i = index; first as isFirst"
+          [class]="{ completed: item.Status, editing: item.Editing }"
+        >
+          <!-- [class.completed]="check1" [class.smallText]="check1" -->
+          <div class="view">
+            <input
+              class="toggle"
+              type="checkbox"
+              [checked]="item.Status"
+              (click)="click(item)"
+            />
+            <!-- <span *ngIf="isFirst" class="firstfront"></span> -->
+            <label (dblclick)="edit(item)">{{ item.Thing }}</label>
+            <!-- (dblclick)雙擊左鍵 -->
+            <button (click)="delete(item)" class="destroy"></button>
+          </div>
+          <input
+            *ngIf="item.Editing"
+            #iteminput
+            [value]="item.Thing"
+            (keyup.enter)="update(item, iteminput.value)"
+            (blur)="update(item, iteminput.value)"
+            (mouseenter)="iteminput.focus()"
+            class="edit"
+          />
+        </li>
+      </ul>
+    </section>
+    <footer class="footer" style="display: block">
+      <span class="todo-count"
+        ><strong>{{ todoActive.length }}</strong> items left</span
+      >
+      <ul class="filters">
+        <li>
+          <a
+            [class.selected]="nowTodoStatusType === TodoStatusType.All"
+            href="#/"
+            (click)="setTodoSet(TodoStatusType.All)"
+            >All</a
+          >
+        </li>
+        <li>
+          <a
+            [class.selected]="nowTodoStatusType === TodoStatusType.Active"
+            href="#/active"
+            (click)="setTodoSet(TodoStatusType.Active)"
+            >Active</a
+          >
+        </li>
+        <li>
+          <a
+            [class.selected]="nowTodoStatusType === TodoStatusType.Completed"
+            href="#/completed"
+            (click)="setTodoSet(TodoStatusType.Completed)"
+            >Completed</a
+          >
+        </li>
+      </ul>
+      <button class="clear-completed" (click)="clearCompleted()" *ngIf="todoCompleted.length">Clear completed</button>
+    </footer>
+  </header>
+</section>
+
+<table border="1">
+  <tr>
+    <td colspan="2">1</td>
+    <!-- colspan 為 Attribute繫結 -->
+  </tr>
+  <tr>
+    <td [attr.data-b]="1 + 2">2</td>
+    <td>3</td>
+  </tr>
+</table>
+
+<table border="1">
+  <tr>
+    <!-- <td [colSpan]="2">A1</td> 如果attr.xxxxx可以找到相對應之Property，那就會將attr.xxxxx給代替掉-->
+    <td [attr.colSpan]="2">A2</td>
+    <!-- colSpan 才是 Property繫結，Ｓ要大寫 -->
+  </tr>
+  <tr>
+    <td [attr.data-a]="555">B</td>
+    <td [attr.data-a]="'555'">C</td>
+  </tr>
+</table>
+<!-- <button (click)="btnFn($event)">alert</button> -->
