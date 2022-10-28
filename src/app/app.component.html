@@ -58,7 +58,7 @@
             <!-- <span *ngIf="isFirst" class="firstfront"></span> -->
             <label (dblclick)="edit(item)">{{ item.Thing }}</label>
             <!-- (dblclick)雙擊左鍵 -->
-            <button (click)="delete(item)" class="destroy"></button>
+            <button (click)="delete(i)" class="destroy"></button>
           </div>
           <input
             *ngIf="item.Editing"
@@ -77,30 +77,17 @@
         ><strong>{{ todoActive.length }}</strong> items left</span
       >
       <ul class="filters">
-        <li>
-          <a
-            [class.selected]="nowTodoStatusType === TodoStatusType.All"
-            href="#/"
-            (click)="setTodoSet(TodoStatusType.All)"
-            >All</a
-          >
-        </li>
-        <li>
-          <a
-            [class.selected]="nowTodoStatusType === TodoStatusType.Active"
-            href="#/active"
-            (click)="setTodoSet(TodoStatusType.Active)"
-            >Active</a
-          >
-        </li>
-        <li>
-          <a
-            [class.selected]="nowTodoStatusType === TodoStatusType.Completed"
-            href="#/completed"
-            (click)="setTodoSet(TodoStatusType.Completed)"
-            >Completed</a
-          >
-        </li>
+      <li
+        *ngFor="let item of toDoStatusList; let i = index"
+      >
+      <a
+          [class.selected]="nowTodoStatusType === item.type"
+          href="#/"
+          (click)="setTodoSet(item.type)"
+          >{{item.text}}</a
+        >
+      </li>
+       
       </ul>
       <button class="clear-completed" (click)="clearCompleted()" *ngIf="todoCompleted.length">Clear completed</button>
     </footer>

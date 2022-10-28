@@ -13,11 +13,20 @@ export class AppComponent {
   nowTodoStatusType = TodoStatusType.All;
   TodoStatusType = TodoStatusType;
 
-  // todoDataList: TodoClass[] = [
-  //   { Status: true, Thing: 'oneThing' },
-  //   { Status: false, Thing: 'twoThing' },
-  //   { Status: false, Thing: 'threeThing' },
-  // ].map((data) => new TodoClass(data.Thing, data.Status));
+  toDoStatusList=[
+    {
+      type:TodoStatusType.All,
+      text:"All"
+    },
+    {
+      type:TodoStatusType.Active,
+      text:"Active"
+    },
+    {
+      type:TodoStatusType.Completed,
+      text:"Completed"
+    },
+  ]
   todoDataList: Todo[] = [
     { Status: true, Thing: 'oneThing', Editing: false },
     { Status: false, Thing: 'twoThing', Editing: false },
@@ -40,46 +49,52 @@ export class AppComponent {
   click(item: Todo) {
     item.Status = !item.Status;
 
-    if (this.todoCompleted.length === this.todoDataList.length) {
-      this.toggleAllBtn = true;
-    } else {
-      this.toggleAllBtn = false;
+    if(this.toDoStatusList.length!=0){
+      if(this.todoActive.length ===this.toDoStatusList.length)this.toggleAllBtn=false
+      if(this.todoCompleted.length ===this.toDoStatusList.length)this.toggleAllBtn=true
     }
   }
 
-  delete(todo: Todo) {
-    console.log('todo', todo);
-    this.todoDataList = this.todoDataList.filter((data) => data !== todo);
-    // this.todoDataList.splice(index, 1);
-  }
-  addEnter(event: KeyboardEvent, input: HTMLInputElement) {
-    // console.log(event.key);
-    if (event.key === 'Enter') {
-      // const value = (event.target as HTMLInputElement).value;
-
-      // this.todoDataList.push(new TodoClass(input.value, false));
-      // (event.target as HTMLInputElement).value = '';
-      input.value = '';
+  delete(index:number) {
+    let temp = 0
+    let found =-1
+    switch(this.nowTodoStatusType){
+      case TodoStatusType.Active:
+        this.todoDataList.forEach((x,i)=>{
+        if(x.Status===false ){
+          if(temp===index){
+            found=i
+          }
+          temp++
+        }
+      })
+        break;
+      case TodoStatusType.Completed:
+        this.todoDataList.forEach((x,i)=>{
+          if(x.Status===true ){
+            if(temp===index){
+              found=i
+            }
+            temp++
+          }
+        })
+        break;
+      default:
+        found=index
+        break;
     }
+    if(found===-1) alert("something wrong")
+    else  this.todoDataList.splice(found,1)
   }
+
   add(value: string) {
+    if(!value.match(/[^\s]+/) )return 
     const todo: Todo = {
       Status: false,
       Thing: value,
       Editing: false,
     };
     this.todoDataList.push(todo);
-
-    //--------------------------
-    // const todo: TodoClass = {
-    //   Status: false,
-    //   Thing: value,
-    // };-->有點多此一舉的話->
-
-    // this.todoDataList.push(new TodoClass(value, false));
-    // 直接new一個
-
-    // value = '';//會清不了HTML的value->是應為傳值傳址,是嗎？ＮＯ18
   }
 
   edit(item: Todo) {
@@ -100,30 +115,28 @@ export class AppComponent {
 
     switch (this.nowTodoStatusType) {
       case TodoStatusType.Active:
-        list = this.todoActive;
+        list =  this.todoActive
         break;
 
       case TodoStatusType.Completed:
-        list = this.todoCompleted;
+        list =  this.todoCompleted
         break;
 
       default:
         list = this.todoDataList;
         break;
     }
-
+   
     return list;
   }
 
-  get todoActive(): Todo[] {
-    return this.todoDataList.filter((data) => data.Status === false);
-    //取到未完成
+  get todoActive(){
+    return  this.todoDataList.filter((data) => !data.Status );
+  }
+  get todoCompleted(){
+    return this.todoDataList.filter((data) => data.Status );
   }
 
-  get todoCompleted(): Todo[] {
-    return this.todoDataList.filter((data) => data.Status === true);
-    //取到完成
-  }
 
   clearCompleted() {
     this.todoDataList = this.todoActive;
