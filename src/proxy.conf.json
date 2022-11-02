@@ -1,0 +1,9 @@
+{
+  "/api": {
+      "target": "https://todo.talllkai.com",
+      "secure": false,
+      "changeOrigin": true
+  }
+}
+
+
